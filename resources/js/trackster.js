@@ -51,8 +51,23 @@ Trackster.renderTracks = function(tracks) {
   Render the tracks given in the API query response.
 */
 Trackster.searchTracksByTitle = function(title) {
+  let accessToken;
+  $.ajax({
+    url: "https://accounts.spotify.com/api/token",
+    grant_type: "client_credentials",
+    headers: {
+      "Authorization": "Basic <base64 encoded a8bc233237574663855a9185bdfed631:603f91b88062413bbc0ebd2d4cf1fe85"
+    },
+    success: function(data) {
+      accessToken = data.access_token;
+    }
+  });
+
   $.ajax({
     url: "https://api.spotify.com/v1/search?type=track&q=" + title,
+    headers: {
+      "Authorization": "Bearer " + accessToken
+    },
     success: function(data) {
       Trackster.renderTracks(data.tracks.items);
     }
